@@ -12,7 +12,7 @@
 
 import PackageDescription
 
-#if true // FIXME: Disabled while we're debugging a runtime crash (rdar://150240032)
+#if false // FIXME: Disabled while we're debugging a runtime crash (rdar://150240032)
 let _traits: Set<Trait> = [
   .default(
     enabledTraits: [

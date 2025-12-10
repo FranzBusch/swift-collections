@@ -12,11 +12,11 @@
 
 import PackageDescription
 
-#if false // FIXME: Disabled while we're debugging a runtime crash (rdar://150240032)
+#if true // FIXME: Disabled while we're debugging a runtime crash (rdar://150240032)
 let _traits: Set<Trait> = [
   .default(
     enabledTraits: [
-      //"UnstableContainersPreview"
+      "UnstableContainersPreview"
     ]),
   .trait(
     name: "UnstableContainersPreview",
@@ -43,9 +43,9 @@ let _traits: Set<Trait> = [
 //
 //     swift build -Xswiftc -DCOLLECTIONS_INTERNAL_CHECKS
 var defines: [SwiftSetting] = [
-//  .define(
-//    "COLLECTIONS_UNSTABLE_CONTAINERS_PREVIEW",
-//    .when(traits: ["UnstableContainersPreview"])),
+  .define(
+    "COLLECTIONS_UNSTABLE_CONTAINERS_PREVIEW",
+    .when(traits: ["UnstableContainersPreview"])),
   .define(
     "COLLECTIONS_UNSTABLE_SORTED_COLLECTIONS",
     .when(traits: ["UnstableSortedCollections"])),

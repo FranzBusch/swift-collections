@@ -470,6 +470,41 @@ extension InputSpan where Element: ~Copyable {
     }
     return unsafe try body(buffer, &initializedCount)
   }
+
+    @_alwaysEmitIntoClient
+    @_lifetime(self: copy self)
+    public mutating func withUnsafeMutableBufferPointer<E: Error, R: ~Copyable>(
+        _ body: (
+            UnsafeMutableBufferPointer<Element>,
+            _ initializedCount: inout Int
+        ) async throws(E) -> R
+    ) async throws(E) -> R {
+        guard let start = unsafe _pointer, capacity > 0 else {
+            let buffer = UnsafeMutableBufferPointer<Element>(_empty: ())
+            var initializedCount = 0
+            defer {
+                precondition(initializedCount == 0, "InputSpan capacity overflow")
+            }
+            return unsafe try await body(buffer, &initializedCount)
+        }
+        // bind memory by hand to sidestep alignment concerns
+        let binding = Builtin.bindMemory(
+            start._rawValue, capacity._builtinWordValue, Element.self
+        )
+        defer { Builtin.rebindMemory(start._rawValue, binding) }
+        let buffer = unsafe UnsafeMutableBufferPointer<Element>(
+            /*_uncheckedStart*/start: .init(start._rawValue), count: capacity
+        )
+        var initializedCount = self._count
+        defer {
+            precondition(
+                0 <= initializedCount && initializedCount <= capacity,
+                "InputSpan capacity overflow"
+            )
+            self._count = initializedCount
+        }
+        return unsafe try await body(buffer, &initializedCount)
+    }
 }
 
 #endif

@@ -9,11 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if compiler(>=6.2) && COLLECTIONS_UNSTABLE_CONTAINERS_PREVIEW
-
-#if !COLLECTIONS_SINGLE_MODULE
 import InternalCollectionsUtilities
-#endif
 import Builtin
 
 @available(SwiftStdlib 5.0, *)
@@ -506,5 +502,3 @@ extension InputSpan where Element: ~Copyable {
         return unsafe try await body(buffer, &initializedCount)
     }
 }
-
-#endif
